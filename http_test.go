@@ -35,8 +35,10 @@ func Test_PostParams(t *testing.T) {
 		"normal_post": &testCase{
 			url: "http://localhost:80/info.php",
 			params: map[string]string{
-				"md5s":    "01243208fb4e83165538242d85f25a91",
+				"md5s":    "01243208fb4e83165538242d85f25a91\t0\t\t\n",
 				"product": "internal",
+				"combo":   "internal",
+				"v":       "2",
 			},
 		},
 	}
