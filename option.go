@@ -12,6 +12,7 @@ type options struct {
 }
 
 //定义了ServerOption为一个函数，参数是*options
+//这样对参数*options赋值，就会一直被保存
 type ServerOption func(*options)
 
 func NewOption(opt ...ServerOption) *options {
