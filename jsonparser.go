@@ -32,15 +32,18 @@ var data = []byte(`
 		},
 		"zion":{
 			"detection":[ 
-				"ave": {
+				{
+					"engine":"ave",
 					"level":50,
 					"malware_names":"ave-virus1",
 				},
-				"bd": {
+				{
+					"engine":"bd",
 					"level":70,
 					"malware_names":"bd-virus1",
 				},
-				"owl": {
+				{
+					"engine":"owl",
 					"level":70,
 					"malware_names":"owl-virus1",
 				}
@@ -72,12 +75,12 @@ func objectEachField() {
 
 func arrayEachStruct() {
 	_, err := jsonparser.ArrayEach(data, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
-		eachValue, _, _, err := jsonparser.Get(value, "url")
+		eachValue, _, _, err := jsonparser.Get(value, "level")
 		if err != nil {
 			fmt.Printf("get each value error:%+v\n", err)
 		}
 		fmt.Printf("each value:%+v\n", string(eachValue))
-	}, "person", "avatars")
+	}, "zion", "detection")
 	if err != nil {
 		panic(err)
 	}
