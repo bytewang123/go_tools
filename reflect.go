@@ -40,19 +40,28 @@ func main() {
 		Age:      10,
 		PhoneNum: "1000000",
 		School:   "spb-kindergarden",
-		City:     "cq",
+		City:     "",
 	}
 
-	rv := reflect.ValueOf(p1)
-	rt := reflect.TypeOf(p1)
-	if rv.Kind() == reflect.Struct {
-		for i := 0; i < rt.NumField(); i++ {
-			fmt.Printf("field:%+v,value:%+v\n", rt.Field(i).Name, rv.Field(i))
+	rv := reflect.ValueOf(&p1)
+	rt := reflect.TypeOf(&p1)
+	/*
+		if rv.Kind() == reflect.Struct {
+			for i := 0; i < rt.NumField(); i++ {
+				fmt.Printf("field:%+v,value:%+v,type:%+v\n", rt.Field(i).Name, rv.Field(i), rv.Field(i).Kind())
+			}
+			rv.FieldByName("City").SetString("chongqing")
 		}
-	}
-	if f, ok := rt.FieldByName("Age"); ok {
-		fmt.Printf("field:%+v,value:%+v\n", f.Name, rv.FieldByName("Age"))
-	}
+	*/
+	cityVal := rv.Elem().FieldByName("City")
+	fmt.Printf("cityVal:%+v\n", cityVal.IsZero())
+	rv.Elem().FieldByName("City").SetString("chongqing")
+	/*
+		if f, ok := rt.Elem().FieldByName("Age"); ok {
+			fmt.Printf("field:%+v,value:%+v\n", f.Name, rv.FieldByName("Age"))
+		}
+	*/
+	fmt.Printf("p1: %+v\n", p1)
 
 	fmt.Printf("type:%+v, value:%+v\n", rt, rv)
 	fmt.Printf("kind is %+v\n", rt.Kind())
