@@ -15,7 +15,9 @@ func main() {
 	//case7()
 	//case8()
 	//case9()
-	case10()
+	//case10()
+	//case11()
+	case12()
 }
 
 func case1() {
@@ -145,6 +147,66 @@ func case9() {
 //当向一个管道写数据，管道已满，且无别的协程存在，死锁发生
 //当从一个管道读数据，管道已空，且无别的协程存在，死锁发生
 
+func case11() {
+	c := make(chan int, 1)
+	go func() {
+		//容量为1，但是写了三次
+		//不会死锁
+		//因为向管道写数据，管道已满，发现还有别的协程存在（主协程）
+		//因此不会死锁
+		fmt.Printf("send:%+v\n", 1)
+		c <- 1
+		fmt.Printf("send:%+v\n", 2)
+		c <- 2
+		fmt.Printf("send:%+v\n", 3)
+		c <- 3
+		fmt.Printf("send:%+v\n", 4)
+		c <- 4
+		fmt.Println("close")
+	}()
+
+	//如果发送端不close管道，以下遍历会发生死锁
+	//这是因为，当遍历到最后4之后，再去读管道，
+	//此时是向一个空管道读数据，
+	//而写管道的协程已经关闭了，没有别的协程了
+	//因此死锁发生
+	for i := range c {
+		fmt.Printf("get:%+v\n", i)
+	}
+}
+
+func case12() {
+	c := make(chan int, 1)
+	go func() {
+		//容量为1，但是写了三次
+		//不会死锁
+		//因为向管道写数据，管道已满，发现还有别的协程存在（主协程）
+		//因此不会死锁
+		fmt.Printf("send:%+v\n", 1)
+		c <- 1
+		fmt.Printf("send:%+v\n", 2)
+		c <- 2
+		fmt.Printf("send:%+v\n", 3)
+		c <- 3
+		fmt.Printf("send:%+v\n", 4)
+		c <- 4
+		fmt.Println("close")
+	}()
+	go func() {
+		fmt.Println("start to test...")
+		time.Sleep(100 * time.Second)
+		fmt.Println("test...")
+	}()
+	//发送端不close管道，以下遍历会在test协程结束后发生死锁
+	//与case11的区别是多了一个测试协程
+	//即遍历c，取到4之后，向一个空管道取数据，本应死锁
+	//但是测试协程还存在，因此不会死锁
+	//当测试协程结束，死锁发生
+	for i := range c {
+		fmt.Printf("get:%+v\n", i)
+	}
+}
+
 //无缓冲管道和有缓冲管道本质上是相同的
 //只是无缓冲管道一来就是满的
 func case4() {
@@ -187,21 +249,4 @@ func case10() {
 	//因此不会死锁了
 	ch <- 1
 	fmt.Println("finish send...")
-}
-
-func case11() {
-	c := make(chan int, 1)
-	go func() {
-		//容量为1，但是写了三次
-		//不会死锁
-		//因为向管道写数据，管道已满，发现还有别的协程存在（主协程）
-		//因此不会死锁
-		c <- 1
-		c <- 2
-		c <- 3
-		c <- 4
-	}()
-	for i := range c {
-
-	}
 }
