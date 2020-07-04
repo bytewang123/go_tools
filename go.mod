@@ -16,6 +16,7 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/fatih/motion v1.1.0 // indirect
 	github.com/go-delve/delve v1.4.0 // indirect
+	github.com/go-redis/redis/v7 v7.2.0
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/mock v1.4.0 // indirect
 	github.com/golang/protobuf v1.3.2

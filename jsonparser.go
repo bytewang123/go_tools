@@ -21,7 +21,6 @@ var data = []byte(`
 					}
                 },
                 "bd":{
-                    "malware_name":"bd-virus1",
                     "version":"1.1",
 					"level":60,
 					"detail":{
@@ -68,6 +67,64 @@ var data = []byte(`
 		}
 		}`)
 
+var data1 = []byte(`
+		{
+		"zion":{
+			"detection":{
+                "ave":{
+                    "malware_name":"Sorter.AutoAdd.123.5001",
+                    "version":"1.1",
+					"level":50,
+					"detail":{
+						"sublevel":1
+					}
+                },
+                "bd":{
+                    "version":"1.1",
+					"level":60,
+					"detail":{
+						"sublevel":2
+					}
+                },
+                "owl":{
+                    "malware_name":"owl-virus1",
+                    "version":"1.1",
+					"level":70,
+					"detail":{
+						"sublevel":3
+					}
+                }
+		}
+		},
+		"vt":{
+			"detection":{
+                "ave":{
+                    "malware_name":"vt-Sorter.AutoAdd.123.5001",
+                    "version":"1.1",
+					"level":70,
+					"detail":{
+						"sublevel":1
+					}
+                },
+                "bd":{
+                    "malware_name":"vt-bd-virus1",
+                    "version":"1.1",
+					"level":60,
+					"detail":{
+						"sublevel":2
+					}
+                },
+                "owl":{
+                    "malware_name":"vt-owl-virus1",
+                    "version":"1.1",
+					"level":50,
+					"detail":{
+						"sublevel":3
+					}
+                }
+		}
+		}
+		}`)
 var report1 = `
 [{"report_uri":1111},{"report_uri":1112},{"report_uri":1113}]
 `
@@ -168,7 +225,7 @@ func queryWithMultiWildCard() {
 
 func recursiveQueryWithWildcards() {
 	result := []string{}
-	recursiveGetData([]string{"*", "*", "*", "malware_name"}, data, &result, 0)
+	recursiveGetData([]string{"zion", "*", "*", "malware_name"}, data, &result, 0)
 	fmt.Println(result)
 }
 
@@ -184,24 +241,30 @@ func recursiveGetData(keys []string, data []byte, result *[]string, layer int) {
 				return nil
 			})
 			if err != nil {
+				fmt.Printf("err:%+v, keys:%+v\n", err, keys[layer])
 				panic(err)
+				return
 			}
 		default:
 			getted, _, _, err := jsonparser.Get(data, keys[layer])
 			if err != nil {
-				panic(err)
+				fmt.Printf("err:%+v, keys:%+v\n", err, keys[layer])
+				*result = append(*result, "notfound")
+				return
 			}
 			recursiveGetData(keys, getted, result, layer+1)
 		}
 	}
 }
 
+/*
 func match() {
 	//countRegexp := regexp.MustCompile(`count(\((.*?)\))`)
 	countRegexp := regexp.MustCompile(`count\(.*?\)`)
 	matches := countRegexp.FindAllString("count(levels == 70 && v1 == \"bd-virus1\")  > 1 || count(levels2 == 60) && v2 == \"ave-virus1\"", -1)
 	fmt.Println(matches)
 }
+*/
 
 func flat() {
 	cond := `levels == 70 && 
